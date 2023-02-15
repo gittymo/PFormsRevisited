@@ -1,0 +1,48 @@
+/*  base.css
+    Base CSS definitions for PForms Revisited.  This stylesheet should not be changed in any way without knowing what you are doing!
+    (C)2023 Morgan Evans */
+
+div.pfcontainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+div.pfcontainer > div {
+	max-width: 1fr;
+}
+
+div.pfcontainer > div.pformfield {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+div.pformfield div {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-grow: 1;
+	background-color: white;
+	padding: 8px;
+}
+
+div.pformfield h1 + div {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-grow: 1;
+}
+
+div.pformfield h1 + div p {
+	font-family: inherit;
+	display: block;
+	margin: 0px;
+	flex: 1;
+}
+
+div.pformfield h1 + div input {
+	font-family: inherit;
+	display: block;
+	margin: 0px;
+	flex: 1;
+}

@@ -1,0 +1,53 @@
+/*  user.css
+    Changes to pform elements should be placed here.
+    (C)2023 Morgan Evans */
+
+div.pfcontainer {
+	gap: 8px;
+	margin: 8px;
+	border-radius: 8px;
+	width: 80%;
+	padding: 8px;
+	position: relative;
+	left: 50%;
+	border: 1px solid black;
+	transform: translate(-50%, 0);
+}
+
+div.pfcontainer + div.pfcontainer {
+	margin-top: 0px;
+}
+
+div.pfcontainer > div.pformfield {
+	font-family: "Arial", "Helvetica", sans-serif;
+	background-color: lightgrey;
+	min-width: 200px;
+	border: 1px solid gray;
+	border-radius: 4px;
+	height: 80px;
+	padding: 0px;
+}
+
+div.pformfield h1 {
+	font-size: 1.2em;
+	margin: 0px 0px 0px 4px;
+	padding: 4px 4px 0px 4px;
+}
+
+div.pformfield h1 + div {
+	background-color: white;
+	padding: 8px;
+	border-radius: 4px;
+	color: black;
+	margin: 6px 0px 0px 0px;
+}
+
+div.pformfield h1 + div input {
+	border: none;
+	border-bottom: 1px solid blue;
+	font-size: 1em;
+}
+
+div.pformfield h1 + div input:focus {
+	outline: none;
+}
