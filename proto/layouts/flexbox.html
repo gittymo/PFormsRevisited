@@ -8,12 +8,17 @@
     <link href="./base.css" rel="stylesheet" />
     <link href="./user.css" rel="stylesheet" />
     <script src="./base.js"></script>
+    <script>
+      function Init() {
+        PFormsInit();
+      }
+    </script>
   </head>
-  <body onload="PFormsInit(); document.getElementById('userid').SetValue('5678')">
+  <body onload="Init()">
     <div class="pfcontainer" id="userinfo">
-      <div class="pformfield" style="min-width: 200px" id="userid" pfheader="User ID" pftype="label" pfvalue="1234"></div>
-      <div class="pformfield" style="min-width: 300px" id="username" pfheader="Username" pftype="text" pfhint="Enter username here"></div>
-      <div class="pformfield" stype="min-width: 200px" id="department" pfheader="Department" pftype="text" pfhint="Enter your department here"></div>
+      <div class="pformfield" style="min-width: 200px" id="firstNum" pfheader="A" pftype="numeric" pfvalue="10"></div>
+      <div class="pformfield" style="min-width: 200px" id="secondNum" pfheader="B" pftype="numeric" pfvalue="15"></div>
+      <div class="pformfield" style="min-width: 200px" id="totalValue" pfheader="A + B?" pftype="label" pfvalue="${firstNum} <= 100 ? {firstNum} + {secondNum} : {secondNum} + {firstNum} + 1"></div>
     </div>
   </body>
 </html>
