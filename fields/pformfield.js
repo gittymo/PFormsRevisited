@@ -169,8 +169,20 @@ function _PForms_ParseFieldValue(pformfieldElement) {
 								pformfieldElement.DependencyValueChanged = function() {
 									var pftype = _PForms_GetAttribute("pftype", this).toUpperCase().trim();
 									switch (pftype) {
-										case "LABEL" : this.lastChild.firstChild.innerText = _PForms_ParseFieldValue(this); break;
-										case "TEXT", "NUMERIC" : this.lastChild.firstChild.value = _PForms_ParseFieldValue(this); break;
+										case "LABEL" : {
+											try {
+												this.lastChild.firstChild.innerText = _PForms_ParseFieldValue(this); 
+											} catch {
+												this.lastChild.firstChild.innerText = "";
+											}
+										} break;
+										case "TEXT", "NUMERIC" : {
+											try {
+												this.lastChild.firstChild.value = _PForms_ParseFieldValue(this);
+											} catch {
+												this.lastChild.firstChild.value = "";
+											}
+										 } break;
 									}
 								}
 							}
