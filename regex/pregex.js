@@ -80,238 +80,155 @@ class PRegex {
 		this.startFlagSet = false; // True if ^ used at start of regex.
 		this.endFlagSet = false; // True if $ used at end of regex.
 
-		var escaped = false;
-		var bracketListOpen = false;
-		var bracketListClosed = false;
-		var rangeOpen = false;
-		var rangeClosed = false;
-		var rangeFirst = true;
-		var rangeCount = 0;
-		var rangeValueSet = false;
-		var rangeValueString = "";
-		var rangeCommas = 0;
+		// Initialise a load of variable that deal with parsing the regex.
+		this._ResetParseVars();
 
 		// Remove any whitespace from either end of the regular expression string.
 		regexString = regexString.trim();
-		var partRegexString = "";
-		var minimumInstances = -1;
-		var maximumInstances = -1;
 
 		if ((typeof regexString === 'string' || regexString instanceof String) && regexString.length > 0) {
 			for (var i = 0; i < regexString.length; i++) {
 				switch (regexString[i]) {
 					case '\\': {
-						if (!rangeOpen) escaped = !escaped;
-						if (bracketListClosed || rangeClosed) {
-							this.pregexParts[this.pregexCount++] = MakePRegexPart(partRegexString, minimumInstances, maximumInstances);
-							bracketListClosed = false;
-							partRegexString = "";
-							minimumInstances = 0;
-							maximumInstances = 0;
-							rangeOpen = rangeClosed = false;
-							rangeFirst = true;
-							rangeValueSet = false;
-							rangeCommas = 0;
-							rangeValueString = "";
+						if (!this._rangeOpen) this._escaped = !this._escaped;
+						if (this._bracketListClosed || this._rangeClosed) {
+							this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
 						}
-						partRegexString += '\\';
+						this._partRegexString += '\\';
 					} break;
 					case '[': {
-						if (escaped) {
-							escaped = false;
-							partRegexString += '[';
+						if (this._escaped) {
+							this._escaped = false;
+							this._partRegexString += '[';
 						} else {
-							if (bracketListClosed) {
-								this.pregexParts[this.pregexCount++] = MakePRegexPart(partRegexString, minimumInstances, maximumInstances);
-								partRegexString = "";
-								minimumInstances = 0;
-								maximumInstances = 0;
-								rangeOpen = rangeClosed = false;
-								bracketListClosed = bracketListOpen = false;
-								rangeFirst = true;
-								rangeValueSet = false;
-								rangeCommas = 0;
-								rangeValueString = "";
+							if (this._bracketListClosed) {
+								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
 							}
-							if (!bracketListOpen) {
-								partRegexString += '[';
-								bracketListOpen = true;
+							if (!this._bracketListOpen) {
+								this._partRegexString += '[';
+								this._bracketListOpen = true;
 							} else {
-								partRegexString += "\\[";
+								this._partRegexString += "\\[";
 							}
 						}
 					} break;
 					case ']': {
-						if (escaped) {
-							escaped = false;
-							partRegexString += ']';
+						if (this._escaped) {
+							this._escaped = false;
+							this._partRegexString += ']';
 						} else {
-							if (bracketListOpen) {
-								bracketListOpen = false;
-								bracketListClosed = true;
-								partRegexString += ']';
+							if (this._bracketListOpen) {
+								this._bracketListOpen = false;
+								this._bracketListClosed = true;
+								this._partRegexString += ']';
 							}
 						}
 					} break;
 					case '*': {
-						if (escaped) {
-							escaped = false;
-							partRegexString += '*';
+						if (this._escaped) {
+							this._escaped = false;
+							this._partRegexString += '*';
 						} else {
-							if (rangeOpen) {
-								if (rangeCount == 0) {
-									if (rangeFirst) partRegexString += '0';
-									rangeValueSet = true;
+							if (this._rangeOpen) {
+								if (this._rangeCount == 0) {
+									if (this._rangeFirst) this._partRegexString += '0';
+									this._rangeValueSet = true;
 								}
 							}
-							if (rangeClosed || rangeCount == 0) {
-								partRegexString += '*';
-								this.pregexParts[this.pregexCount++] = MakePRegexPart(partRegexString, minimumInstances, maximumInstances);
-								partRegexString = "";
-								minimumInstances = 0;
-								maximumInstances = 0;
-								rangeOpen = rangeClosed = false;
-								bracketListClosed = bracketListOpen = false;
-								rangeFirst = true;
-								rangeValueSet = false;
-								rangeCommas = 0;
-								rangeValueString = "";
+							if (this._rangeClosed || this._rangeCount == 0) {
+								this._partRegexString += '*';
+								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
 							}
 						}
 					} break;
 					case '+': {
-						if (escaped) {
-							escaped = false;
-							partRegexString += '+';
+						if (this._escaped) {
+							this._escaped = false;
+							this._partRegexString += '+';
 						} else {
-							if (rangeOpen) {
-								if (rangeCount == 0) {
-									if (rangeFirst) partRegexString += '1';
-									rangeValueSet = true;
+							if (this._rangeOpen) {
+								if (this._rangeCount == 0) {
+									if (this._rangeFirst) this._partRegexString += '1';
+									this._rangeValueSet = true;
 								}
 							}
-							if (rangeClosed || rangeCount == 0) {
-								partRegexString += '+';
-								this.pregexParts[this.pregexCount++] = MakePRegexPart(partRegexString, minimumInstances, maximumInstances);
-								partRegexString = "";
-								minimumInstances = 0;
-								maximumInstances = 0;
-								rangeOpen = rangeClosed = false;
-								bracketListClosed = bracketListOpen = false;
-								rangeFirst = true;
-								rangeValueSet = false;
-								rangeCommas = 0;
-								rangeValueString = "";
+							if (this._rangeClosed || this._rangeCount == 0) {
+								this._partRegexString += '+';
+								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);		
 							}
 						}
 					} break;
 					case '?': {
-						if (escaped) {
-							escaped = false;
-							partRegexString += '?';
+						if (this._escaped) {
+							this._escaped = false;
+							this._partRegexString += '?';
 						} else {
-							if (rangeOpen) {
-								if (rangeCount == 0) {
-									if (rangeFirst) partRegexString += '0';
-									else partRegexString += '1';
-									rangeValueSet = true;
+							if (this._rangeOpen) {
+								if (this._rangeCount == 0) {
+									if (this._rangeFirst) this._partRegexString += '0';
+									else this._partRegexString += '1';
+									this._rangeValueSet = true;
 								}
 							}
-							if (rangeClosed || rangeCount == 0) {
-								partRegexString += '?';
-								this.pregexParts[this.pregexCount++] = MakePRegexPart(partRegexString, minimumInstances, maximumInstances);
-								partRegexString = "";
-								minimumInstances = 0;
-								maximumInstances = 0;
-								rangeOpen = rangeClosed = false;
-								bracketListClosed = bracketListOpen = false;
-								rangeFirst = true;
-								rangeValueSet = false;
-								rangeCommas = 0;
-								rangeValueString = "";
+							if (this._rangeClosed || this._rangeCount == 0) {
+								this._partRegexString += '?';
+								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
 							}
 						}
 					} break;
 					case '{': {
-						if (escaped) {
-							escaped = false;
-							partRegexString += '{';
+						if (this._escaped) {
+							this._escaped = false;
+							this._partRegexString += '{';
 						} else {
-							if (!rangeOpen) {
-								if (bracketListClosed) bracketListClosed = false;
-								rangeOpen = true;
-								rangeClosed = false;
-								rangeCount = 0;
-								rangeValueSet = false;
-								rangeValueString = "";
-								rangeCommas = 0;
+							if (!this._rangeOpen) {
+								if (this._bracketListClosed) this._bracketListClosed = false;
+								this._ResetRangeParseVars();
+								this._rangeOpen = true;
 							}
 						}
 					} break;
 					case '}': {
-						if (escaped) {
-							escaped = false;
-							partRegexString += '}';
+						if (this._escaped) {
+							this._escaped = false;
+							this._partRegexString += '}';
 						} else {
-							if (rangeOpen) {
-								if (rangeFirst) minimumInstances = parseInt(rangeValueString);
-								else maximumInstances = parseInt(rangeValueString);
-								rangeValueString = "";
-								rangeOpen = false;
-								rangeClosed = true;
-								rangeCount = 0;
-								rangeFirst = true;
-								rangeCommas = 0;
-								rangeValueSet = false;
+							if (this._rangeOpen) {
+								if (this._rangeFirst) this._minimumInstances = parseInt(this._rangeValueString);
+								else this._maximumInstances = parseInt(this._rangeValueString);
+								this._ResetRangeParseVars();
+								this._rangeClosed = true;
 							} else {
-								partRegexString += '}';
+								this._partRegexString += '}';
 							}
 						}
 					} break;
 					default: {
-						if (escaped) {
-							escaped = false;
-							partRegexString += regexString[i];
-							this.pregexParts[this.pregexCount++] = MakePRegexPart(partRegexString, minimumInstances, maximumInstances);
-							partRegexString = "";
-							minimumInstances = 0;
-							maximumInstances = 0;
-							rangeOpen = rangeClosed = false;
-							rangeFirst = true;
-							rangeValueSet = false;
-							rangeCommas = 0;
-							rangeValueString = "";
-							bracketListClosed = bracketListOpen = false;
+						if (this._escaped) {
+							this._escaped = false;
+							this._partRegexString += regexString[i];
+							this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
 						} else {
-							if (bracketListClosed || rangeClosed) {
-								this.pregexParts[this.pregexCount++] = MakePRegexPart(partRegexString, minimumInstances, maximumInstances);
-								partRegexString = "";
-								minimumInstances = 0;
-								maximumInstances = 0;
-								rangeOpen = rangeClosed = false;
-								rangeFirst = true;
-								rangeValueSet = false;
-								rangeCommas = 0;
-								rangeValueString = "";
-								bracketListClosed = bracketListOpen = false;
+							if (this._bracketListClosed || this._rangeClosed) {
+								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
 								i--;
 							} else {
-								if (rangeOpen) {
-									if (regexString[i] >= '0' && regexString[i] <= '9' && !rangeValueSet) {
-										rangeValueString += regexString[i];
+								if (this._rangeOpen) {
+									if (regexString[i] >= '0' && regexString[i] <= '9' && !this._rangeValueSet) {
+										this._rangeValueString += regexString[i];
 									} else if (regexString[i] == ',') {
-										if (rangeCommas == 0) {
-											rangeCommas++;
-											minimumInstances = parseInt(rangeValueString);
-											rangeFirst = false;
-											rangeValueString = "";
+										if (this._rangeCommas == 0) {
+											this._rangeCommas = 1;
+											this._minimumInstances = parseInt(this._rangeValueString);
+											this._rangeFirst = false;
+											this._rangeValueString = "";
 										}
 									}
 								} else {
-									if (bracketListOpen) partRegexString += regexString[i];
+									if (this._bracketListOpen) this._partRegexString += regexString[i];
 									else {
 										if (regexString[i] != '$' && regexString[i] != '^') {
-											this.pregexParts[this.pregexCount++] = MakePRegexPart(regexString[i], -1, -1);
+											this._MakePRegexPart(regexString[i], -1, -1);
 										}
 										if (regexString[i] == '^') this.startFlagSet = true;
 										if (regexString[i] == '$') this.endFlagSet = true;
@@ -322,8 +239,31 @@ class PRegex {
 					}
 				}
 			}
-			if (partRegexString.length > 0) this.pregexParts[this.pregexCount++] = MakePRegexPart(partRegexString, minimumInstances, maximumInstances);
+			if (this._partRegexString.length > 0) this.pregexParts[this.pregexCount++] = 
+				this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
 		}
+	}
+
+	_MakePRegexPart(regexPartString, minimumInstances, maximumInstances)
+	{
+		this.pregexParts[this.pregexCount++] = new PRegexPart(regexPartString, minimumInstances, maximumInstances);
+		this._ResetParseVars();
+	}
+
+	_ResetParseVars() {
+		this._escaped = false;
+		this._bracketListOpen = this._bracketListClosed = false;
+		this._partRegexString = "";
+		this._minimumInstances = this._maximumInstances = -1;
+		this._ResetRangeParseVars();
+	}
+
+	_ResetRangeParseVars() {
+		this._rangeOpen = this._rangeClosed = false;
+		this._rangeFirst = true;
+		this._rangeCount = this._rangeCommas = 0;
+		this._rangeValueSet = false;
+		this._rangeValueString = "";
 	}
 
 	IsMatch(valueString) {
@@ -347,9 +287,4 @@ class PRegex {
 		if (this.endFlagSet) regexString += "$";
 		return regexString;
 	}
-}
-
-function MakePRegexPart(regexPartString, minimumInstances, maximumInstances)
-{
-	return new PRegexPart(regexPartString, minimumInstances, maximumInstances);
 }
