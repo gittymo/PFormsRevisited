@@ -3,12 +3,13 @@
   <head>
     <title>PForms Revisited Prototyping - Flexbox Layouts</title>
     <meta charset="utf-8" />
-    <meta name="description" content="Prototyping area to test layout capabilities and limitations of flexbox layout" />
+    <meta name="description" content="Prototyping area to pforms revisited library." />
     <meta name="author" content="Morgan Evans" />
     <link href="./base.css" rel="stylesheet" />
     <link href="./user.css" rel="stylesheet" />
     <script src="./base.js"></script>
     <script src="./fields/pformfield.js"></script>
+    <script src="./regex/pregex.js"></script>
     <script>
       function Init() {
         PFormsInit();
@@ -18,7 +19,7 @@
   <body onload="Init()">
     <div class="pfcontainer" id="userinfo">
       <div class="pformfield" style="min-width: 200px" id="firstNum" pfheader="A" pftype="numeric" pfvalue="10"></div>
-      <div class="pformfield" style="min-width: 200px" id="secondNum" pfheader="B" pftype="numeric" pfvalue="15"></div>
+      <div class="pformfield" style="min-width: 200px" id="secondNum" pfheader="B" pftype="numeric" pfvalue="20"></div>
       <div class="pformfield" style="min-width: 200px" id="totalValue" pfheader="A + B?" pftype="label" pfvalue="${firstNum} <= 100 ? {firstNum} + {secondNum} : {secondNum} + {firstNum} + 1"></div>
     </div>
   </body>
