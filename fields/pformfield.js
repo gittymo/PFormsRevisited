@@ -101,14 +101,13 @@ function _PForms_CreateFieldValueElement(pformsFieldElement) {
 function _PForms_GetFieldValue() {
   // Set the default return value to null.
   var fieldValue = null;
-
   // Check to see if the given element has a pftype attribute and a child element that hosts the field's value.
   if (this.pftype && this.pfvalueElement) {
     // It does, so use the field's type to extract the field value from the appropriate child element.
     switch (this.pftype) {
       case "LABEL" : fieldValue = this.pfvalueElement.innerText; break;  // Get the inner text value of the first p child if it's a label element.
       case "TEXT" : fieldValue = this.pfvalueElement.value; break;				// Get the value of the first input child if it's a text element.
-      case "NUMERIC" : fieldValue = isNaN(this.pfvalueElement.value) ? "0" : this.pfvalueElement.value; break;
+      case "NUMBER" : fieldValue = isNaN(this.pfvalueElement.value) ? "0" : this.pfvalueElement.value; break;
     }
   }
   return fieldValue;
