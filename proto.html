@@ -18,9 +18,16 @@
   </head>
   <body onload="Init()">
     <div class="pfcontainer" id="userinfo">
-      <div class="pformfield" style="min-width: 200px" id="firstNum" pfheader="A" pftype="numeric" pfvalue="10"></div>
-      <div class="pformfield" style="min-width: 200px" id="secondNum" pfheader="B" pftype="numeric" pfvalue="20"></div>
+      <div class="pformfield" style="min-width: 200px" id="firstNum" pfheader="A" pftype="number" pfvalue="10"></div>
+      <div class="pformfield" style="min-width: 200px" id="secondNum" pfheader="B" pftype="number" pfvalue="20"></div>
       <div class="pformfield" style="min-width: 200px" id="totalValue" pfheader="A + B?" pftype="label" pfvalue="${firstNum} <= 100 ? {firstNum} + {secondNum} : {secondNum} + {firstNum} + 1"></div>
+    </div>
+    <div class="pfcontainer" id="datestuff">
+      <div class="pformfield" style="min-width: 200px" id="dateonly" pfheader="Date of Birth" pftype="date"></div>
+      <div class="pformfield" style="min-width: 200px" id="datetime" pfheader="Son's Date of Birth" pftype="datetime-local"></div>
+    </div>
+    <div class="pfcontainer" id="customstuff">
+      <div class="pformfield" style="min-width: 200px" id="prodcode" pfheader="Product Code" pftype="custom" pfpattern="^[A-Za-z][A-Za-z][0-9][0-9][0-9][0-9][0-9][0-9]$"></div>
     </div>
   </body>
 </html>

@@ -35,13 +35,8 @@ function PFormsCreateFieldUsing(htmlElement) {
 			// Add the pform field's value ui element as a child to this element.
 			htmlElement.pfvalueElement = _PForms_CreateFieldValueElement(htmlElement);
 
-			// If the user has provided a pfpattern attribute, override any default pattern provided by the type.
-      if (htmlElement.getAttribute("pfpattern")) {
-				htmlElement.pfpattern = new PRegex(htmlElement.getAttribute("pfpattern"));
-			}
-
 			// Check to see if the field has a pattern to verify input against.
-			if (htmlElement.pfpattern) {
+			if (htmlElement.pftype === "CUSTOM") {
 				// It does, so only allow input that matches the pattern.
         htmlElement.pfvalueElement.onkeypress = function(event) {
           var match = htmlElement.pfpattern.IsMatch(htmlElement.pfvalueElement.value + String.fromCharCode(event.keyCode));
@@ -90,15 +85,12 @@ function _PForms_CreateFieldValueElement(pformsFieldElement) {
 				valueElement = _PForms_CreateFieldValueElementUsingTag("p", pformsFieldElement);
 				valueElement.innerText = _PForms_ParseFieldValue(pformsFieldElement);
 			} break;
-			case "TEXT", "NUMERIC" : {
-				// It's an editable text input.
+			default : {
+				// For now, let's just assume we're working with input as the only other HTML element.
 				valueElement = _PForms_CreateFieldValueElementUsingTag("input", pformsFieldElement, true);
 			  valueElement.value = _PForms_ParseFieldValue(pformsFieldElement);
 				if (pformsFieldElement.pfHint) textInputElement.placeholder = pformsFieldElement.pfHint;
-				if (pformsFieldElement.pftype === "NUMERIC") {
-					pformsFieldElement.pfpattern = new PRegex("^[0-9]*\\.[0-9]*$");
-				}
-			} break;
+			}
 		}
     if (valueElement) intermediaryDiv.appendChild(valueElement);
 	}
@@ -217,6 +209,14 @@ function _PForms_CreateFieldValueElementUsingTag(tagname, pformsFieldElement, no
   var valueElement = null;
   if (_PForms_IsValidFieldElement(pformsFieldElement)) {
     valueElement = document.createElement(tagname);
+		switch (pformsFieldElement.pftype) {
+			case "CUSTOM" : {
+				if (pformsFieldElement.getAttribute("pfpattern")) {
+					pformsFieldElement.pfpattern = new PRegex(pformsFieldElement.getAttribute("pfpattern"));	
+				}
+			} break;
+			default: valueElement.type = pformsFieldElement.pftype;
+		}
 		valueElement.pformsField = pformsFieldElement;
     pformsFieldElement.pfvalueElement = valueElement;
     if (notifyValueChanged) valueElement.onchange = _PForms_NotifyValueChange;

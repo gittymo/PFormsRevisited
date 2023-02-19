@@ -76,9 +76,6 @@ class PRegex {
 		this.pregexParts = new Array(10);
 		// pregexCount gives the total number of parts in the regular expression.
 		this.pregexCount = 0;
-		// A few flag members to tell us more about the regex.
-		this.startFlagSet = false; // True if ^ used at start of regex.
-		this.endFlagSet = false; // True if $ used at end of regex.
 
 		// Initialise a load of variable that deal with parsing the regex.
 		this._ResetParseVars();
@@ -88,159 +85,73 @@ class PRegex {
 
 		if ((typeof regexString === 'string' || regexString instanceof String) && regexString.length > 0) {
 			for (var i = 0; i < regexString.length; i++) {
-				switch (regexString[i]) {
-					case '\\': {
-						if (!this._rangeOpen) this._escaped = !this._escaped;
-						if (this._bracketListClosed || this._rangeClosed) {
-							this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
-						}
-						this._partRegexString += '\\';
-					} break;
-					case '[': {
-						if (this._escaped) {
-							this._escaped = false;
-							this._partRegexString += '[';
-						} else {
-							if (this._bracketListClosed) {
-								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
-							}
-							if (!this._bracketListOpen) {
-								this._partRegexString += '[';
-								this._bracketListOpen = true;
-							} else {
-								this._partRegexString += "\\[";
-							}
-						}
-					} break;
-					case ']': {
-						if (this._escaped) {
-							this._escaped = false;
-							this._partRegexString += ']';
-						} else {
-							if (this._bracketListOpen) {
-								this._bracketListOpen = false;
-								this._bracketListClosed = true;
-								this._partRegexString += ']';
-							}
-						}
-					} break;
-					case '*': {
-						if (this._escaped) {
-							this._escaped = false;
-							this._partRegexString += '*';
-						} else {
-							if (this._rangeOpen) {
-								if (this._rangeCount == 0) {
-									if (this._rangeFirst) this._partRegexString += '0';
-									this._rangeValueSet = true;
-								}
-							}
-							if (this._rangeClosed || this._rangeCount == 0) {
-								this._partRegexString += '*';
-								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
-							}
-						}
-					} break;
-					case '+': {
-						if (this._escaped) {
-							this._escaped = false;
-							this._partRegexString += '+';
-						} else {
-							if (this._rangeOpen) {
-								if (this._rangeCount == 0) {
-									if (this._rangeFirst) this._partRegexString += '1';
-									this._rangeValueSet = true;
-								}
-							}
-							if (this._rangeClosed || this._rangeCount == 0) {
-								this._partRegexString += '+';
-								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);		
-							}
-						}
-					} break;
-					case '?': {
-						if (this._escaped) {
-							this._escaped = false;
-							this._partRegexString += '?';
-						} else {
-							if (this._rangeOpen) {
-								if (this._rangeCount == 0) {
-									if (this._rangeFirst) this._partRegexString += '0';
-									else this._partRegexString += '1';
-									this._rangeValueSet = true;
-								}
-							}
-							if (this._rangeClosed || this._rangeCount == 0) {
-								this._partRegexString += '?';
-								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
-							}
-						}
-					} break;
-					case '{': {
-						if (this._escaped) {
-							this._escaped = false;
-							this._partRegexString += '{';
-						} else {
-							if (!this._rangeOpen) {
-								if (this._bracketListClosed) this._bracketListClosed = false;
-								this._ResetRangeParseVars();
-								this._rangeOpen = true;
-							}
-						}
-					} break;
-					case '}': {
-						if (this._escaped) {
-							this._escaped = false;
-							this._partRegexString += '}';
-						} else {
-							if (this._rangeOpen) {
-								if (this._rangeFirst) this._minimumInstances = parseInt(this._rangeValueString);
-								else this._maximumInstances = parseInt(this._rangeValueString);
-								this._ResetRangeParseVars();
-								this._rangeClosed = true;
-							} else {
-								this._partRegexString += '}';
-							}
-						}
-					} break;
-					default: {
-						if (this._escaped) {
-							this._escaped = false;
-							this._partRegexString += regexString[i];
-							this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
-						} else {
+				if (!this._rangeOpen) this._partRegexString += regexString[i];
+				if (this._escaped) {
+					this._escaped = false;
+					if (this._bracketListClosed || this._rangeClosed) {
+						this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
+					}
+				} else {
+					if (regexString[i] == '$' || regexString[i] == '^') continue;
+					switch (regexString[i]) {
+						case '\\': {
+							this._escaped = !this._escaped;
+						} break;
+						case '[': {
 							if (this._bracketListClosed || this._rangeClosed) {
+								this._partRegexString = this._partRegexString.substring(0, this._partRegexString.length - 1);
+								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
+								i--;
+							}
+							this._bracketListOpen = true;	
+						} break;
+						case ']': {
+							this._bracketListOpen = false;
+							this._bracketListClosed = true;
+						} break;
+						case '*': {
+							this._MakePRegexPart(this._partRegexString, 0, -1);
+						} break;
+						case '+': {
+							this._MakePRegexPart(this._partRegexString, 1, -1);		
+						} break;
+						case '?': {
+							this._MakePRegexPart(this._partRegexString, 0, 1);
+						} break;
+						case '{': {
+							this._partRegexString = this._partRegexString.substring(0, this._partRegexString.length - 1);
+							this._rangeOpen = true;
+						} break;
+						case '}': {
+							if (this._rangeFirst) this._minimumInstances = this._maximumInstances = parseInt(this._rangeValueString);
+							else this._maximumInstances = parseInt(this._rangeValueString);
+							this._rangeOpen = false;
+							this._rangeClosed = true;
+						} break;
+						default: {
+							if (this._bracketListClosed && !this._rangeOpen) {
+								this._partRegexString = this._partRegexString.substring(0, this._partRegexString.length - 1);
 								this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
 								i--;
 							} else {
 								if (this._rangeOpen) {
-									if (regexString[i] >= '0' && regexString[i] <= '9' && !this._rangeValueSet) {
-										this._rangeValueString += regexString[i];
-									} else if (regexString[i] == ',') {
+									if (regexString[i] == ',') {
 										if (this._rangeCommas == 0) {
 											this._rangeCommas = 1;
 											this._minimumInstances = parseInt(this._rangeValueString);
 											this._rangeFirst = false;
 											this._rangeValueString = "";
 										}
-									}
-								} else {
-									if (this._bracketListOpen) this._partRegexString += regexString[i];
-									else {
-										if (regexString[i] != '$' && regexString[i] != '^') {
-											this._MakePRegexPart(regexString[i], -1, -1);
-										}
-										if (regexString[i] == '^') this.startFlagSet = true;
-										if (regexString[i] == '$') this.endFlagSet = true;
-									}
+							 		} else this._rangeValueString += regexString[i];
 								}
 							}
 						}
 					}
 				}
 			}
-			if (this._partRegexString.length > 0) this.pregexParts[this.pregexCount++] = 
+			if (this._partRegexString.length > 0) {
 				this._MakePRegexPart(this._partRegexString, this._minimumInstances, this._maximumInstances);
+			}
 		}
 	}
 
@@ -268,11 +179,10 @@ class PRegex {
 
 	IsMatch(valueString) {
 		var matched = false;
-		var regexString = this.startFlagSet ? "^" : "";
+		var regexString = "";
 		for (var i = 0; i < this.pregexCount && !matched; i++) {
 			regexString += this.pregexParts[i].ToString();
-			var finalRegexString = regexString + (this.endFlagSet ? "$" : "");
-			// console.log(finalRegexString);
+			var finalRegexString = "^" + regexString + "$";
 			var re = new RegExp(finalRegexString);
 			matched = re.test(valueString);
 		}
@@ -280,11 +190,10 @@ class PRegex {
 	}
 
 	ToString() {
-		var regexString = this.startFlagSet ? "^" : "";
+		var regexString = "";
 		for (var i = 0; i < this.pregexCount; i++) {
 			regexString += this.pregexParts[i].ToString();
 		}
-		if (this.endFlagSet) regexString += "$";
 		return regexString;
 	}
 }

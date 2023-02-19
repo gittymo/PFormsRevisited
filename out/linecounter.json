@@ -1,0 +1,70 @@
+{
+    "extension": "linecounter",
+    "version": "0.2.7",
+    "workspace": "/home/morgan/dev/web/PFR",
+    "linecount": [
+        {
+            "version": "0.2.7",
+            "counttime": "2023-02-18 07:39:00",
+            "filesum": 6,
+            "codesum": 574,
+            "commentsum": 60,
+            "blanksum": 58,
+            "statistics": {
+                ".html": {
+                    "code": 33,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".css": {
+                    "code": 81,
+                    "comment": 6,
+                    "blank": 14
+                },
+                ".js": {
+                    "code": 460,
+                    "comment": 54,
+                    "blank": 44
+                }
+            },
+            "filelist": [
+                {
+                    "blank": 7,
+                    "code": 38,
+                    "comment": 3,
+                    "filename": "base.css"
+                },
+                {
+                    "blank": 5,
+                    "code": 25,
+                    "comment": 9,
+                    "filename": "base.js"
+                },
+                {
+                    "blank": 21,
+                    "code": 173,
+                    "comment": 33,
+                    "filename": "fields/pformfield.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 33,
+                    "comment": 0,
+                    "filename": "proto.html"
+                },
+                {
+                    "blank": 18,
+                    "code": 262,
+                    "comment": 12,
+                    "filename": "regex/pregex.js"
+                },
+                {
+                    "blank": 7,
+                    "code": 43,
+                    "comment": 3,
+                    "filename": "user.css"
+                }
+            ]
+        }
+    ]
+}
