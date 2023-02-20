@@ -8,11 +8,12 @@
     <link href="./base.css" rel="stylesheet" />
     <link href="./user.css" rel="stylesheet" />
     <script src="./base.js"></script>
-    <script src="./fields/pformfield.js"></script>
+    <script src="./fields/pformField.js"></script>
+    <script src="./fields/pformSelectElement.js"></script>
     <script src="./regex/pregex.js"></script>
     <script>
       function Init() {
-        PFormsInit();
+        PFormInit();
       }
     </script>
   </head>
@@ -27,7 +28,10 @@
       <div class="pformfield" style="min-width: 200px" id="datetime" pfheader="Son's Date of Birth" pftype="datetime-local"></div>
     </div>
     <div class="pfcontainer" id="customstuff">
-      <div class="pformfield" style="min-width: 200px" id="prodcode" pfheader="Product Code" pftype="custom" pfpattern="^[A-Za-z][A-Za-z][0-9][0-9][0-9][0-9][0-9][0-9]$"></div>
+      <div class="pformfield" style="min-width: 200px" id="prodcode" pfheader="Product Code" pftype="custom" pfpattern="[A-Za-z][A-Za-z][0-9]{1,6}"></div>
+    </div>
+    <div class="pfcontainer" id="dropdowndemo">
+      <div class="pformfield" style="min-width: 200px" id="ddlist" pfheader="Game Type" pftype="dropdown" pfvalue="Platform,Racing,RPG,Strategy,Shooter"></div>
     </div>
   </body>
 </html>

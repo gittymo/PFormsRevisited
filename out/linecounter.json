@@ -65,6 +65,75 @@
                     "filename": "user.css"
                 }
             ]
+        },
+        {
+            "version": "0.2.7",
+            "counttime": "2023-02-20 11:39:52",
+            "filesum": 7,
+            "codesum": 571,
+            "commentsum": 57,
+            "blanksum": 65,
+            "statistics": {
+                ".js": {
+                    "code": 425,
+                    "comment": 51,
+                    "blank": 45
+                },
+                ".html": {
+                    "code": 37,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".css": {
+                    "code": 109,
+                    "comment": 6,
+                    "blank": 20
+                }
+            },
+            "filelist": [
+                {
+                    "blank": 8,
+                    "code": 43,
+                    "comment": 3,
+                    "filename": "base.css"
+                },
+                {
+                    "blank": 5,
+                    "code": 25,
+                    "comment": 9,
+                    "filename": "base.js"
+                },
+                {
+                    "blank": 20,
+                    "code": 181,
+                    "comment": 34,
+                    "filename": "fields/pformField.js"
+                },
+                {
+                    "blank": 2,
+                    "code": 46,
+                    "comment": 0,
+                    "filename": "fields/pformSelectElement.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 37,
+                    "comment": 0,
+                    "filename": "proto.html"
+                },
+                {
+                    "blank": 18,
+                    "code": 173,
+                    "comment": 8,
+                    "filename": "regex/pregex.js"
+                },
+                {
+                    "blank": 12,
+                    "code": 66,
+                    "comment": 3,
+                    "filename": "user.css"
+                }
+            ]
         }
     ]
 }

@@ -2,6 +2,13 @@
     Changes to pform elements should be placed here.
     (C)2023 Morgan Evans */
 
+:root {
+	--pformfield_input_border_colour: #66BBFF;
+	--pformfield_border_colour: #000000;
+	--pformfield_header_background_colour: #DDEEFF;
+	--pformfield_background_colour: #FFFFFF;
+}
+
 div.pfcontainer {
 	gap: 8px;
 	margin: 8px;
@@ -10,7 +17,7 @@ div.pfcontainer {
 	padding: 8px;
 	position: relative;
 	left: 50%;
-	border: 1px solid black;
+	border: 1px solid var(--pformfield_border_colour);
 	transform: translate(-50%, 0);
 }
 
@@ -20,9 +27,9 @@ div.pfcontainer + div.pfcontainer {
 
 div.pfcontainer > div.pformfield {
 	font-family: "Arial", "Helvetica", sans-serif;
-	background-color: lightgrey;
+	background-color: var(--pformfield_header_background_colour);
 	min-width: 200px;
-	border: 1px solid gray;
+	border: 1px solid var(--pformfield_input_border_colour);
 	border-radius: 4px;
 	height: 80px;
 	padding: 0px;
@@ -35,19 +42,52 @@ div.pformfield h1 {
 }
 
 div.pformfield h1 + div {
-	background-color: white;
+	background-color: var(--pformfield_background_colour);
 	padding: 8px;
 	border-radius: 4px;
 	color: black;
 	margin: 6px 0px 0px 0px;
 }
 
-div.pformfield h1 + div input {
+div.pformfield div input {
 	border: none;
-	border-bottom: 1px solid blue;
+	border-bottom: 1px solid var(--pformfield_input_border_colour);
 	font-size: 1em;
 }
 
-div.pformfield h1 + div input:focus {
+div.pformfield div input:focus {
 	outline: none;
+}
+
+div.pformfield div div.pformselectelement {
+	border: 1px solid var(--pformfield_input_border_colour);
+	border-radius: 4px;
+	background: var(--pformfield_background_colour);
+	padding: 4px;
+	font-size: 1em;
+}
+
+div.pformfield div div.pformselectelement {
+	border: 1px solid var(--pformfield_input_border_colour);
+	padding: 4px;
+}
+
+div.pformfield div.pformselectoptionsbox {
+	border: 1px solid var(--pformfield_input_border_colour);
+	border-radius: 4px;
+	background: var(--pformfield_background_colour);
+	padding: 0px;
+}
+
+div.pformselectoption {
+	padding: 4px !important;
+	margin: 0px;
+}
+
+div.pformselectoption + div.pformselectoption {
+	padding-top: 0px;
+}
+
+div.pformselectoption:hover {
+	background: var(--pformfield_header_background_colour);
 }

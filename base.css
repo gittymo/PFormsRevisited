@@ -22,7 +22,6 @@ div.pformfield div {
 	flex-direction: row;
 	align-items: center;
 	flex-grow: 1;
-	background-color: white;
 	padding: 8px;
 }
 
@@ -33,16 +32,25 @@ div.pformfield h1 + div {
 	flex-grow: 1;
 }
 
-div.pformfield h1 + div p {
+div.pformfield div p, input, div.pformselectelement {
+	position: relative;
 	font-family: inherit;
 	display: block;
 	margin: 0px;
 	flex: 1;
 }
 
-div.pformfield h1 + div input {
-	font-family: inherit;
+div.pformfield div.pformselectoptionsbox {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	flex-grow: 1;
+}
+
+div.pformselectoption {
 	display: block;
+	padding: 0px;
 	margin: 0px;
 	flex: 1;
 }
