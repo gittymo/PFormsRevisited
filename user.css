@@ -88,6 +88,10 @@ div.pformselectoption + div.pformselectoption {
 	padding-top: 0px;
 }
 
-div.pformselectoption:hover {
+.pfselectedOption {
+	background: var(--pformfield_input_border_colour) !important;
+}
+
+.pfintendedSelectionOption {
 	background: var(--pformfield_header_background_colour);
 }

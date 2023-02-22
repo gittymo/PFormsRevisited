@@ -1,71 +1,156 @@
+// _Pform_ActiveSelectOptionBox is used to identify and close any open select option boxes when the user clicks outside the
+// component area or resizes the display area (e.g. by resizing the browser window).
+var _Pform_ActiveSelectOptionsBox = null;
+
 function _Pform_CreateSelectField(pformFieldElement, maxOptionLines = 5) {
-  var selectElement = null;
-  if (_PForm_IsValidFieldElement(pformFieldElement)) {
-    // The component the user will initially interact with for the dropdown (select) input field is a div.
-    selectElement = document.createElement("div");
-    selectElement.pformFieldElement = pformFieldElement;
-    selectElement.className = "pformselectelement";
+	var selectElement = null;
+	if (_PForm_IsValidFieldElement(pformFieldElement)) {
+		// The component the user will initially interact with for the dropdown (select) input field is a div.
+		selectElement = document.createElement("div");
+		selectElement.pformFieldElement = pformFieldElement;
+		selectElement.className = "pformselectelement";
 
-    if (pformFieldElement.getAttribute("pfvalue")) {
-      pformFieldElement.values = pformFieldElement.getAttribute("pfvalue").split(",");
-      if (Array.isArray(pformFieldElement.values) && pformFieldElement.values.length > 0) {
-        pformFieldElement.pfselectedIndex = 0;
-        pformFieldElement.pfmaxOptionLines = !isNaN(maxOptionLines) && maxOptionLines > 0 ? maxOptionLines : 5;
-        pformFieldElement.pfselectOptionsBox = document.createElement("div");
-        pformFieldElement.pfselectOptionsBox.className = "pformselectoptionsbox";
-        pformFieldElement.pfselectOptionsBox.style = "display: none";
-        pformFieldElement.appendChild(pformFieldElement.pfselectOptionsBox);
-        for (var i = 0; i < pformFieldElement.values.length; i++) {
-          pformFieldElement.pfselectOptionsBox.appendChild(_PForm_CreateSelectFieldOption(i, pformFieldElement));
-        }
-        selectElement.innerText = pformFieldElement.values[pformFieldElement.pfselectedIndex];
-      }
-    }
+		if (pformFieldElement.getAttribute("pfvalues")) {
+			_Pform_CreateSelectOptionsBox(pformFieldElement, maxOptionLines);
+			pformFieldElement.appendChild(pformFieldElement.pfselectOptionsBox);
+			selectElement.pfoptionsBox = pformFieldElement.pfselectOptionsBox;
+			selectElement.innerText = pformFieldElement.pfselectOptionsBox.childNodes[pformFieldElement.pfselectOptionsBox.selectedOption.GetValueIndex()].innerText;
+		}
 
-    selectElement.onclick = (event) => {  
-      var selectElement = event.target;
-      var optionsBox = selectElement.pformFieldElement.pfselectOptionsBox;
-      var options = optionsBox.childNodes;
-      if (options) {
-        for (var i = 0; i < options.length; i++) {
-          if (i >= selectElement.pformFieldElement.pfselectedIndex &&
-              i < selectElement.pformFieldElement.pfselectedIndex + selectElement.pformFieldElement.pfmaxOptionLines)
-          {
-            options[i].style = "display: block";
-          } else {
-            options[i].style = "display: none";
-          }
-        }
-      }
-      optionsBox.style = "display: block; left: 17px; " + "top: " + (pformFieldElement.clientHeight - selectElement.clientHeight - 3) + "px; " + 
-        "width: " + (selectElement.clientWidth) + "px;";
-      _PF_ActiveSelectOptionBox = optionsBox;
-      event.stopPropagation();
-    }
+		selectElement.onclick = (event) => {
+			var selectElement = event.target;
+			var optionsBox = _Pform_ActiveSelectOptionsBox = selectElement.pfoptionsBox;
+			var options = optionsBox.childNodes;
+			if (options) {
+				_Pform_UpdateActiveSelectOptionsBox();
+			}
+			optionsBox.style = "display: block; left: 17px; " + "top: " + (pformFieldElement.clientHeight - selectElement.clientHeight - 3) + "px; " +
+				"width: " + (selectElement.clientWidth) + "px;";
+			event.stopPropagation();
+		}
 
-    return selectElement;
-  }
+		return selectElement;
+	}
 }
 
-function _PForm_CreateSelectFieldOption(valueIndex, pformFieldElement) {
-  var option = null;
-  if (_PForm_IsValidFieldElement(pformFieldElement) && 
-      valueIndex >= 0 && 
-      pformFieldElement.values && 
-      pformFieldElement.values.length > 0 &&
-      valueIndex < pformFieldElement.values.length)
-  {
-    option = document.createElement("div");
-    option.className = "pformselectoption";
-    option.pformFieldElement = pformFieldElement;
-    option.innerText = pformFieldElement.values[valueIndex];
-    option.valueIndex = valueIndex;
-    option.style = "display: none";
-    option.onclick = (event) => {
-      var clickedOption = event.target;
-      option.pformFieldElement.pfvalueElement.innerText = clickedOption.innerText;
-      clickedOption.pformFieldElement.pfselectOptionsBox.style = "display: none";
-    }
-    return option;
-  }
+function _Pform_CreateSelectOptionsBox(pformFieldElement, maxOptionLines) {
+	var selectOptionsBox = document.createElement("div");
+	selectOptionsBox.className = "pformselectoptionsbox";
+	selectOptionsBox.style = "display: none";
+	selectOptionsBox.pformFieldElement = pformFieldElement;
+	selectOptionsBox.maxOptionLines = !isNaN(maxOptionLines) && maxOptionLines > 0 ? maxOptionLines : 5;
+	pformFieldElement.pfselectOptionsBox = selectOptionsBox;
+	_Pform_CreateSelectFieldOptions(pformFieldElement);
+	selectOptionsBox.selectedOption = selectOptionsBox.intendedSelectionOption = selectOptionsBox.previouslySelectedOption = selectOptionsBox.children.item(
+		pformFieldElement.getAttribute("pfselectedIndex") && 
+		pformFieldElement.getAttribute("pfselectedIndex") >= 0 && 
+		pformFieldElement.getAttribute("pfselectedIndex") < selectOptionsBox.children.length ? pformFieldElement.getAttribute("pfselectedIndex") : 0);
+	selectOptionsBox.selectedOption.classList.add("pfselectedOption");
+}
+
+function _Pform_UpdateActiveSelectOptionsBox() {
+	if (_Pform_ActiveSelectOptionsBox) {
+		var pformFieldElement = _Pform_ActiveSelectOptionsBox.pformFieldElement;
+		if (pformFieldElement) {
+			var options = _Pform_ActiveSelectOptionsBox.childNodes;
+			const selectedEndOffset = _Pform_ActiveSelectOptionsBox.maxOptionLines - (options.length - _Pform_ActiveSelectOptionsBox.intendedSelectionOption.GetValueIndex());
+			const startIndex = _Pform_ActiveSelectOptionsBox.intendedSelectionOption.GetValueIndex() - (selectedEndOffset > 0 ? selectedEndOffset : 0);
+			const endIndex = startIndex + pformFieldElement.pfmaxOptionLines > options.length ? options.length : startIndex + _Pform_ActiveSelectOptionsBox.maxOptionLines;
+			for (var i = 0; i < options.length; i++) {
+				if (i >= startIndex && i < endIndex) {
+					options[i].style = "display: block";
+				} else {
+					options[i].style = "display: none";
+				}
+			}
+		}
+	}
+}
+
+function _Pform_SelectFieldSelectOption(option) {
+	if (option != option.optionsBox.previouslySelectedOption) {
+		option.optionsBox.previouslySelectedOption.classList.remove("pfselectedOption");
+		option.pformFieldElement.pfvalueElement.innerText = option.GetValue();
+		option.optionsBox.selectedOption = option.optionsBox.previouslySelectedOption = option.optionsBox.intendedSelectionOption = option;
+		option.optionsBox.selectedOption.classList.add("pfselectedOption");
+	}
+	option.pformFieldElement.pfselectOptionsBox.style = "display: none";
+}
+
+function _Pform_CreateSelectFieldOptions(pformFieldElement) {
+	if (_PForm_IsValidFieldElement(pformFieldElement) && pformFieldElement.pftype === "DROPDOWN" && pformFieldElement.pfselectOptionsBox) {
+		const valuesArray = pformFieldElement.getAttribute("pfvalues").split(",");
+		const optionsBox = pformFieldElement.pfselectOptionsBox;
+		if (valuesArray && valuesArray.length > 0) {
+			for (var i = 0; i < valuesArray.length; i++) {
+				var option = document.createElement("div");
+				option.className = "pformselectoption";
+				option.optionsBox = optionsBox;
+				option.pformFieldElement = pformFieldElement;
+				option.innerText = valuesArray[i];
+				option.style = "display: none";
+				option.onclick = (event) => _Pform_SelectFieldSelectOption(event.target);
+
+				option.onmouseenter = (event) => {
+					const optionElement = event.target;
+					if (_Pform_ActiveSelectOptionsBox.intendedSelectionOption && _Pform_ActiveSelectOptionsBox.intendedSelectionOption != optionElement) {
+						_Pform_ActiveSelectOptionsBox.intendedSelectionOption.classList.remove("pfintendedSelectionOption");
+					}
+					optionElement.classList.add("pfintendedSelectionOption");
+					_Pform_ActiveSelectOptionsBox.intendedSelectionOption = optionElement;
+					_Pform_ActiveSelectOptionsBox.intendedSelectionOption.classList.add("pfintendedSelectionOption");
+				}
+
+				option.GetValue = function () {
+					return this.innerText;
+				}
+
+				option.GetValueIndex = function () {
+					return Array.prototype.indexOf.call(this.parentNode.children, this);
+				}
+
+				optionsBox.appendChild(option);
+			}
+		}
+	}
+}
+
+// Global click event capture. 
+// Note: Will likely need to use a similar one for keypress and mousewheel events when it comes to select and type ahead input fields
+document.querySelector("html").addEventListener('click', (event) => {
+	if (_Pform_ActiveSelectOptionsBox && _Pform_ActiveSelectOptionsBox.style.display === "block" && event.target != _Pform_ActiveSelectOptionsBox) {
+		_Pform_ActiveSelectOptionsBox.style = "display: none";
+	}
+}, true);
+
+document.querySelector("html").addEventListener('keydown', (event) => {
+	if (_Pform_ActiveSelectOptionsBox && _Pform_ActiveSelectOptionsBox.style.display === "block") {
+		if (_Pform_ActiveSelectOptionsBox.intendedSelectionOption) {
+			_Pform_ActiveSelectOptionsBox.intendedSelectionOption.classList.remove("pfintendedSelectionOption");
+		}
+		switch (event.key) {
+			case "ArrowUp": {
+				if (_Pform_ActiveSelectOptionsBox.intendedSelectionOption.previousSibling) {
+					_Pform_ActiveSelectOptionsBox.intendedSelectionOption = _Pform_ActiveSelectOptionsBox.intendedSelectionOption.previousSibling;
+				}
+			} break;
+			case "ArrowDown": {
+				if (_Pform_ActiveSelectOptionsBox.intendedSelectionOption.nextSibling) {
+					_Pform_ActiveSelectOptionsBox.intendedSelectionOption = _Pform_ActiveSelectOptionsBox.intendedSelectionOption.nextSibling;
+				}
+			} break;
+			case "Enter": {
+				_Pform_SelectFieldSelectOption(_Pform_ActiveSelectOptionsBox.intendedSelectionOption);
+			} break;
+		}
+		_Pform_ActiveSelectOptionsBox.intendedSelectionOption.classList.add("pfintendedSelectionOption");
+		_Pform_UpdateActiveSelectOptionsBox();
+	}
+}, true);
+
+// Global window resize event capture.
+window.onresize = (event) => {
+	if (_Pform_ActiveSelectOptionsBox && _Pform_ActiveSelectOptionsBox.style.display === "block") {
+		_Pform_ActiveSelectOptionsBox.style = "display: none";
+	}
 }

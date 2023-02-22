@@ -121,6 +121,7 @@ function _PForm_GetFieldValue() {
       case "LABEL" : fieldValue = this.pfvalueElement.innerText; break;  // Get the inner text value of the first p child if it's a label element.
       case "TEXT" : fieldValue = this.pfvalueElement.value; break;				// Get the value of the first input child if it's a text element.
       case "NUMBER" : fieldValue = isNaN(this.pfvalueElement.value) ? "0" : this.pfvalueElement.value; break;
+			case "DROPDOWN" : fieldValue = this.pfselectOptionsBox.selectedOption ? this.pfselectOptionsBox.selectedOption.GetValue() : null;
     }
   }
   return fieldValue;
