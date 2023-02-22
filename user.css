@@ -91,7 +91,3 @@ div.pformselectoption + div.pformselectoption {
 .pfselectedOption {
 	background: var(--pformfield_input_border_colour) !important;
 }
-
-.pfintendedSelectionOption {
-	background: var(--pformfield_header_background_colour);
-}

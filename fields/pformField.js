@@ -94,6 +94,9 @@ function _PForm_CreateFieldValueElement(pformFieldElement) {
 				// For now, let's just assume we're working with input as the only other HTML element.
 				valueElement = _PForm_CreateFieldValueElementUsingTag("input", pformFieldElement, true);
 			  valueElement.value = _PForm_ParseFieldValue(pformFieldElement);
+				if (pformFieldElement.pftype === "FILE" && pformFieldElement.getAttribute("pffiletypes")) {
+					valueElement.setAttribute("accept", pformFieldElement.getAttribute("pffiletypes"));
+				}
 				if (pformFieldElement.pfHint) textInputElement.placeholder = pformFieldElement.pfHint;
 			}
 		}

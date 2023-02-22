@@ -75,3 +75,29 @@ proto.html, code is 37, comment is 0, blank is 0.
 regex/pregex.js, code is 173, comment is 8, blank is 18.
 user.css, code is 76, comment is 3, blank is 14.
 ===============================================================================
+===============================================================================
+EXTENSION NAME : linecounter
+EXTENSION VERSION : 0.2.7
+-------------------------------------------------------------------------------
+count time : 2023-02-22 15:38:48
+count workspace : /home/morgan/dev/web/PFR
+total files : 7
+total code lines : 675
+total comment lines : 67
+total blank lines : 83
+
+    statistics
+   |      extension|     total code|  total comment|    total blank|percent|
+   -------------------------------------------------------------------------
+   |            .js|            514|             61|             60|     76|
+   |          .html|             37|              0|              0|    5.5|
+   |           .css|            124|              6|             23|     18|
+   -------------------------------------------------------------------------
+base.css, code is 45, comment is 3, blank is 8.
+base.js, code is 25, comment is 10, blank is 5.
+fields/pformField.js, code is 181, comment is 37, blank is 22.
+fields/pformSelectElement.js, code is 135, comment is 6, blank is 15.
+proto.html, code is 37, comment is 0, blank is 0.
+regex/pregex.js, code is 173, comment is 8, blank is 18.
+user.css, code is 79, comment is 3, blank is 15.
+===============================================================================
