@@ -31,14 +31,14 @@ div.pfcontainer > div.pformfield {
 	min-width: 200px;
 	border: 1px solid var(--pformfield_input_border_colour);
 	border-radius: 4px;
-	height: 80px;
+	height: 78px;
 	padding: 0px;
 }
 
 div.pformfield h1 {
 	font-size: 1.2em;
 	margin: 0px 0px 0px 4px;
-	padding: 4px 4px 0px 4px;
+	padding: 6px 4px 0px 4px;
 }
 
 div.pformfield h1 + div {
@@ -72,7 +72,7 @@ div.pformfield div div.pformselectelement {
 	padding: 4px;
 }
 
-div.pformfield div.pformselectoptionsbox {
+div.pformselectoptionsbox {
 	border: 1px solid var(--pformfield_input_border_colour);
 	border-radius: 4px;
 	background: var(--pformfield_background_colour);
@@ -88,6 +88,14 @@ div.pformselectoption + div.pformselectoption {
 	padding-top: 0px;
 }
 
-.pfselectedOption {
+div.pfselectedOption {
 	background: var(--pformfield_input_border_colour) !important;
+}
+
+input::file-selector-button {
+	background: var(--pformfield_header_background_colour);
+	padding: 4px;
+	border: 1px solid var(--pformfield_input_border_colour);
+	border-bottom: none;
+	border-radius: 4px;
 }

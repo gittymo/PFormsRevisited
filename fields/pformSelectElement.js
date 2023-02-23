@@ -14,20 +14,24 @@ function _Pform_CreateSelectField(pformFieldElement, maxOptionLines = 5) {
 
 		if (pformFieldElement.getAttribute("pfvalues")) {
 			_Pform_CreateSelectOptionsBox(pformFieldElement, maxOptionLines);
-			pformFieldElement.appendChild(pformFieldElement.pfselectOptionsBox);
+			document.body.appendChild(pformFieldElement.pfselectOptionsBox);
 			selectElement.pfoptionsBox = pformFieldElement.pfselectOptionsBox;
 			selectElement.innerText = pformFieldElement.pfselectOptionsBox.childNodes[pformFieldElement.pfselectOptionsBox.selectedOption.GetValueIndex()].innerText;
 		}
 
 		selectElement.onclick = (event) => {
 			var selectElement = event.target;
+			var pformFieldElement = selectElement.pformFieldElement;
 			var optionsBox = _Pform_ActiveSelectOptionsBox = selectElement.pfoptionsBox;
 			var options = optionsBox.childNodes;
 			if (options) {
 				_Pform_UpdateActiveSelectOptionsBox();
 			}
-			optionsBox.style = "display: block; left: 17px; " + "top: " + (pformFieldElement.clientHeight - selectElement.clientHeight - 3) + "px; " +
-				"width: " + (selectElement.clientWidth) + "px;";
+			const selectElementBoundingRect = selectElement.getBoundingClientRect();
+			const optionsBoxStyleString = "display: block; left: " + selectElementBoundingRect.left + "px; " + 
+																		"top: " + selectElementBoundingRect.top + "px; " +
+																		"width: " + (selectElement.clientWidth) + "px;";
+			optionsBox.style = 	optionsBoxStyleString;
 			event.stopPropagation();
 		}
 
@@ -90,7 +94,7 @@ function _Pform_CreateSelectFieldOptions(pformFieldElement) {
 				option.pformFieldElement = pformFieldElement;
 				option.innerText = valuesArray[i];
 				option.style = "display: none";
-				option.onclick = (event) => _Pform_SelectFieldSelectOption(event.target);
+				option.onclick = (event) => _Pform_SelectFieldSelectOption(option.optionsBox.intendedSelectionOption);
 
 				option.onmouseenter = (event) => {
 					const optionElement = event.target;
@@ -161,7 +165,7 @@ document.querySelector("html").addEventListener('keydown', (event) => {
 				_Pform_ActiveSelectOptionsBoxSearchTicks = 20;
 			}
 		}
-		_Pform_ActiveSelectOptionsBox.intendedSelectionOption.classList.add("pfintendedSelectionOption");
+		_Pform_ActiveSelectOptionsBox.intendedSelectionOption.classList.add("pfselectedOption");
 		_Pform_UpdateActiveSelectOptionsBox();
 	}
 }, true);
