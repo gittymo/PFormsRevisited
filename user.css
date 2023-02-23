@@ -72,6 +72,10 @@ div.pformfield div div.pformselectelement {
 	padding: 4px;
 }
 
+div.pformfield div div.pformselectelement:focus {
+	border: 2px solid var(--pformfield_input_border_colour);
+}
+
 div.pformselectoptionsbox {
 	border: 1px solid var(--pformfield_input_border_colour);
 	border-radius: 4px;
@@ -80,6 +84,7 @@ div.pformselectoptionsbox {
 }
 
 div.pformselectoption {
+	font-family: "Arial", "Helvetica", sans-serif;
 	padding: 4px !important;
 	margin: 0px;
 }

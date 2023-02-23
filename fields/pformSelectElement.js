@@ -42,7 +42,7 @@ function _Pform_CreateSelectField(pformFieldElement, maxOptionLines = 5) {
 			// Make the options box a child of the main body of the page (so it can be rendered correctly above everything else).
 			document.body.appendChild(pformFieldElement.pfselectOptionsBox);
 			// Add a property to the select element that allows it to reference its associated options box element.
-			selectElement.pfoptionsBox = pformFieldElement.pfselectOptionsBox;
+			selectElement.optionsBox = pformFieldElement.pfselectOptionsBox;
 			// Set the textual value of the select element to reflect the currently selected option.
 			selectElement.innerText = pformFieldElement.pfselectOptionsBox.childNodes[pformFieldElement.pfselectOptionsBox.selectedOption.GetValueIndex()].innerText;
 		}
@@ -52,22 +52,17 @@ function _Pform_CreateSelectField(pformFieldElement, maxOptionLines = 5) {
 		selectElement.onclick = (event) => {
 			// Get the element that was clicked.
 			var selectElement = event.target;
+			// Grab the focus
+			selectElement.focus();
 			// Get the reference to the select element's options box and record it both in the local variable 'optionsBox'
 			// and the global varible '_Pform_ActiveSelectOptionsBox'.
-			var optionsBox = _Pform_ActiveSelectOptionsBox = selectElement.pfoptionsBox;
+			var optionsBox = _Pform_ActiveSelectOptionsBox = selectElement.optionsBox;
 			// Get the reference to the array of child elements (nodes) for the options box.
 			var options = optionsBox.childNodes;
 			// Check to make sure reference is valid and that the array contains something.
 			if (options && options.length > 0) {
-				// Configure the options box so that it shows an appropriate selection of options.
-				_Pform_UpdateActiveSelectOptionsBox();
-				const selectElementBoundingRect = selectElement.getBoundingClientRect();
-				// Get the bounding rectangle (co-ordinates) of the select element and set the position and size of the options
-				// box so that it appears over and stretches below the select element.
-				const optionsBoxStyleString = "display: block; left: " + selectElementBoundingRect.left + "px; " + 
-																			"top: " + selectElementBoundingRect.top + "px; " +
-																			"width: " + (selectElement.clientWidth) + "px;";
-				optionsBox.style = 	optionsBoxStyleString;
+				// Show the options box.
+				_Pform_ShowSelectOptionsBox(selectElement);
 				// Prevent the click event from bubbling any further.
 				event.stopPropagation();
 			}
@@ -77,14 +72,40 @@ function _Pform_CreateSelectField(pformFieldElement, maxOptionLines = 5) {
 	}
 }
 
-function _Pform_CreateSelectOptionsBox(pformFieldElement, maxOptionLines) {
+function _Pform_ShowSelectOptionsBox(selectElement) {
+	if (selectElement.optionsBox) {
+		// Configure the options box so that it shows an appropriate selection of options.
+		_Pform_UpdateActiveSelectOptionsBox();
+		// Get the bounding rectangle (co-ordinates) of the select element and set the position and size of the options
+		// box so that it appears over and stretches below the select element.
+		const selectElementBoundingRect = selectElement.getBoundingClientRect();
+		const optionsBoxStyleString = "display: block; left: " + selectElementBoundingRect.left + "px; " + 
+																			"top: " + selectElementBoundingRect.top + "px; " +
+																			"width: " + (selectElement.clientWidth) + "px;";
+		selectElement.optionsBox.style = optionsBoxStyleString;
+		selectElement.optionsBox.selectedOption.classList.add("pfselectedOption");
+	}
+}
+
+// _Pform_CreateSelectOptionsBox creates the options box that is displayed whe the user clicks on the pform field's value.
+// The parameter pformFieldElement is a reference to the pform field element that holds the select element.
+// The parameter maxOptionLines gives the maxmimum number of lines to display in the options box (defaults to 5).
+function _Pform_CreateSelectOptionsBox(pformFieldElement, maxOptionLines = 5) {
+	// Create the options box element and apply the appropriate css class and style information.
 	var selectOptionsBox = document.createElement("div");
 	selectOptionsBox.className = "pformselectoptionsbox";
 	selectOptionsBox.style = "display: none";
+	// Record a reference to the parent pform field element so the options box element can reference it.
 	selectOptionsBox.pformFieldElement = pformFieldElement;
-	selectOptionsBox.maxOptionLines = !isNaN(maxOptionLines) && maxOptionLines > 0 ? maxOptionLines : 5;
+	// Likewise create a reference for the options box within its parent pform field.
 	pformFieldElement.pfselectOptionsBox = selectOptionsBox;
+	// Sanitise the given 'maxOptionLines' parameter value and store it as a parameter for the options box element so that it
+	// knows how many option lines to display.
+	selectOptionsBox.maxOptionLines = !isNaN(maxOptionLines) && maxOptionLines > 0 ? maxOptionLines : 5;
+	// Create the options box options from the values taken from the parent pform field's pfvalues attribute.
 	_Pform_CreateSelectFieldOptions(pformFieldElement);
+	// Make sure the options box is correctly configured, so that the correct option is selected (or the first one if the pform field 
+	// has no selected option index).
 	selectOptionsBox.selectedOption = selectOptionsBox.intendedSelectionOption = selectOptionsBox.previouslySelectedOption = selectOptionsBox.children.item(
 		pformFieldElement.getAttribute("pfselectedIndex") &&
 			pformFieldElement.getAttribute("pfselectedIndex") >= 0 &&
@@ -185,6 +206,10 @@ document.querySelector("html").addEventListener('keydown', (event) => {
 			case "Enter": {
 				_Pform_SelectFieldSelectOption(_Pform_ActiveSelectOptionsBox.intendedSelectionOption);
 			} break;
+			case "Escape": {
+				_Pform_ActiveSelectOptionsBox.style.display="none";
+				_Pform_ActiveSelectOptionsBox = null;
+			} break;
 			default: {
 				// Try to match the first option value to the text the user is typing.
 				var typedChar = String.fromCharCode(event.keyCode);
@@ -203,8 +228,20 @@ document.querySelector("html").addEventListener('keydown', (event) => {
 				_Pform_ActiveSelectOptionsBoxSearchTicks = _Pform_ActiveSelectOptionsBoxSearchTicksLimit;
 			}
 		}
-		_Pform_ActiveSelectOptionsBox.intendedSelectionOption.classList.add("pfselectedOption");
-		_Pform_UpdateActiveSelectOptionsBox();
+		if (_Pform_ActiveSelectOptionsBox != null) {
+			_Pform_ActiveSelectOptionsBox.intendedSelectionOption.classList.add("pfselectedOption");
+			_Pform_UpdateActiveSelectOptionsBox();
+		}
+	} else {
+		// Check to see if the current element is an select (dropdown) field.
+		if (event.target.optionsBox) {
+			switch (event.key) {
+				case "Enter"," " : {
+					_Pform_ActiveSelectOptionsBox = event.target.optionsBox;
+					_Pform_ShowSelectOptionsBox(event.target);
+				} break;
+			}
+		}
 	}
 }, true);
 

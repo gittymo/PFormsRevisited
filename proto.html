@@ -19,8 +19,8 @@
   </head>
   <body onload="Init()">
     <div class="pfcontainer" id="userinfo">
-      <div class="pformfield" style="min-width: 200px" id="firstNum" pfheader="A" pftype="number" pfvalue="10"></div>
-      <div class="pformfield" style="min-width: 200px" id="secondNum" pfheader="B" pftype="number" pfvalue="20"></div>
+      <div class="pformfield" style="min-width: 200px" id="firstNum" pfheader="A" pftype="number" pfvalue="10" pftabindex="1"></div>
+      <div class="pformfield" style="min-width: 200px" id="secondNum" pfheader="B" pftype="number" pfvalue="20" pftabindex="2"></div>
       <div class="pformfield" style="min-width: 200px" id="totalValue" pfheader="A + B?" pftype="label" pfvalue="${firstNum} <= 100 ? {firstNum} + {secondNum} : {secondNum} + {firstNum} + 1"></div>
     </div>
     <div class="pfcontainer" id="datestuff">
@@ -30,10 +30,10 @@
       <div class="pformfield" style="min-width: 200px" id="datemonth" pfheader="Birth Month" pftype="month"></div>
     </div>
     <div class="pfcontainer" id="customstuff">
-      <div class="pformfield" style="min-width: 200px" id="prodcode" pfheader="Product Code (Custom)" pftype="custom" pfpattern="[A-Za-z][A-Za-z][0-9]{1,6}" pfhint="Format AAxxxxxx, where A=A-Z and x=0-9"></div>
+      <div class="pformfield" style="min-width: 200px" id="prodcode" pfheader="Product Code (Custom)" pftype="custom" pfpattern="[A-Za-z][A-Za-z][0-9]{1,6}" pfhint="Format AAxxxxxx, where A=A-Z and x=0-9" pftabindex="3"></div>
     </div>
     <div class="pfcontainer" id="dropdowndemo">
-      <div class="pformfield" style="min-width: 200px" id="ddlist" pfheader="Game Type" pftype="dropdown" pfvalues="Platform,Racing,RPG,Strategy,Shooter,FPS" pfselectedIndex="1"></div>
+      <div class="pformfield" style="min-width: 200px" id="ddlist" pfheader="Game Type" pftype="dropdown" pfvalues="Platform,Racing,RPG,Strategy,Shooter,FPS" pfselectedIndex="1" pftabindex="4"></div>
     </div>
     <div class="pfcontainer" id="others">
       <div class="pformfield" style="min-width: 400px" id="filepicker" pfheader="Image File" pftype="file" pffiletypes=".jpeg, .jpg, .png, .bmp"></div>

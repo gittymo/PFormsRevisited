@@ -99,6 +99,12 @@ function _PForm_CreateFieldValueElement(pformFieldElement) {
 			}
 		}
 
+		// If we have a valid value element and the parent form field has a pftabindex attribute value, 
+		// apply that tab index to the value element.
+		if (valueElement && pformFieldElement.getAttribute("pftabindex")) {
+			valueElement.tabIndex = pformFieldElement.getAttribute("pftabindex");
+		}
+
 		// If we have a valid value element, we need to add it to the intermediary div and also create a circular link between the
 		// value element and it's host pformfield element.
     if (valueElement) {
