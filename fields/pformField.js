@@ -69,8 +69,6 @@ function _PForm_CreateFieldUsing(htmlElement) {
   }
 }
 
-// Internal utility methods
-
 function _PForm_CreateFieldValueElement(pformFieldElement) {
   var valueElement = null;
 	if (_PForm_IsValidFieldElement(pformFieldElement)) {
@@ -97,7 +95,7 @@ function _PForm_CreateFieldValueElement(pformFieldElement) {
 				if (pformFieldElement.pftype === "FILE" && pformFieldElement.getAttribute("pffiletypes")) {
 					valueElement.setAttribute("accept", pformFieldElement.getAttribute("pffiletypes"));
 				}
-				if (pformFieldElement.pfHint) textInputElement.placeholder = pformFieldElement.pfHint;
+				if (pformFieldElement.pfHintText) valueElement.placeholder = pformFieldElement.pfHintText;
 			}
 		}
 
